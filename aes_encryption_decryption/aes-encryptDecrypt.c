@@ -82,7 +82,7 @@ int base64decode(uint8_t *pEncBuff, uint32_t *buffLen, uint8_t *pDecBuff, uint32
 
 int generateRandomKey(unsigned char *keyVal, uint32_t keysize)
 {
-    unsigned char fixedkey[] = "GVkX18gQ9dtSgO0Q9mKeBy03KXfqKVO";
+    unsigned char fixedkey[] = "GVkX18gQ9dtSgO0Q9mKeBy03KXfqKVOsI";
 
     unsigned char *encodedString;
     int byte_to_encode = 32;
