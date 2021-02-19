@@ -90,20 +90,23 @@ int generateRandomKey(unsigned char *keyVal, uint32_t keysize)
 {
     unsigned char fixedkey[] = "GVkX18gQ9dtSgO0Q9mKeBy03KXfqKVOsI";
     int ret;
-    size_t length;
+    int ranKeylen;
 
     ret = RAND_bytes(keyVal, keysize);
     if (ret != 1)
     {
         memcpy(keyVal, fixedkey, keysize);
     }
-    length = strlen(keyVal);
-    if (length < keysize)
+
+    ranKeylen = strlen(keyVal);
+
+    if (ranKeylen < keysize)
     {
-        --length;
-        for (int i = length; i < keysize; ++i)
+        int i = --ranKeylen;
+        while (i < keysize)
         {
             *(keyVal + i) = fixedkey[i];
+            i++;
         }
     }
 }
