@@ -82,7 +82,7 @@ int base64decode(uint8_t *pEncBuff, uint32_t *buffLen, uint8_t *pDecBuff, uint32
 
 int generateRandomKey(unsigned char *keyVal, uint32_t keysize)
 {
-    unsigned char fixedkey[] = "GVkX18gQ9dtSgO0Q9mKeBy03KXfqKVOb";
+    unsigned char fixedkey[] = "GVkX18gQ9dtSgO0Q9mKeBy03KXfqKVO";
 
     unsigned char *encodedString;
     int byte_to_encode = 32;
@@ -94,12 +94,12 @@ int generateRandomKey(unsigned char *keyVal, uint32_t keysize)
         memcpy(keyVal, fixedkey, keysize);
     }
     length = strlen(keyVal);
-    if (length < RANDOM_NUM_SIZE)
+    if (length < keysize)
     {
-        length--;
-        for (int i = length; i < RANDOM_NUM_SIZE; i++)
+        --length;
+        for (int i = length; i < keysize; i++)
         {
-            keyVal[i] = fixedkey[i];
+            *(keyVal + i) = fixedkey[i];
         }
     }
 }
@@ -220,7 +220,6 @@ int main(int argc, char *argv[])
     uint32_t buffLen = (int)strlen(encryptBuff);
     int encoded_buf_length = 48;
     base64encode(encryptBuff, &buffLen, base64EncBuff, &encoded_buf_length);
-
 
     uint32_t buffLen_d = (int)strlen(base64EncBuff);
     int decode_buf_length = 48;
