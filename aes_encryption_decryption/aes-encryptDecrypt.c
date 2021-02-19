@@ -235,16 +235,3 @@ int main(int argc, char *argv[])
     //decryptBuff[dec_length] = '\0';
     puts(decryptBuff);
 }
-
-//Ref
-//https://git.trustedfirmware.org/TF-M/trusted-firmware-m.git/plain/lib/ext/cryptocell-312-runtime/utils/src/common/common_crypto_encode.c
-//https://stackoverflow.com/questions/10774287/openssl-base64-decoded-string-does-not-always-decrypt
-//https://stackoverflow.com/questions/342409/how-do-i-base64-encode-decode-in-c
-//https://github.com/bawejakunal/AES-CBC-256/blob/master/aes.c
-//https://github.com/kulkarniamit/openssl-evp-demo/blob/master/openssl_evp_demo.c
-//https://medium.com/@amit.kulkarni/encrypting-decrypting-a-file-using-openssl-evp-b26e0e4d28d4
-//https://stackoverflow.com/questions/342409/how-do-i-base64-encode-decode-in-c
-//https://www.openssl.org/docs/man1.0.2/man3/
-
-//MEMORY base64 conversion
-//https://www.openssl.org/docs/man1.0.2/man3/BIO_f_base64.html
