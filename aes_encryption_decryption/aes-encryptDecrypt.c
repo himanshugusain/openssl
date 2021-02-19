@@ -82,7 +82,6 @@ int base64decode(uint8_t *pEncBuff, uint32_t *buffLen, uint8_t *pDecBuff, uint32
 
 int generateRandomKey(unsigned char *keyVal, uint32_t keysize)
 {
-    //unsigned char randomKey[RANDOM_NUM_SIZE + 1] = {0};
     unsigned char fixedkey[] = "GVkX18gQ9dtSgO0Q9mKeBy03KXfqKVOb";
 
     unsigned char *encodedString;
@@ -217,21 +216,17 @@ int main(int argc, char *argv[])
     unsigned int buflength = 32;
 
     int enc_length = encrypt(buffToEnc, (int)strlen(buffToEnc), key, iv, encryptBuff);
-    //printf("base64 encrypted data = %s length = %d\n", encryptBuff, enc_length);
 
     uint32_t buffLen = (int)strlen(encryptBuff);
     int encoded_buf_length = 48;
     base64encode(encryptBuff, &buffLen, base64EncBuff, &encoded_buf_length);
 
-    //printf("base64 encoded data = %s length = %d \n", base64EncBuff, strlen(base64EncBuff));
 
     uint32_t buffLen_d = (int)strlen(base64EncBuff);
     int decode_buf_length = 48;
 
     base64decode(base64EncBuff, &buffLen_d, base64DecBuff, &decode_buf_length);
-    //printf("base64 decoded data =  %s length = %d\n", base64DecBuff, strlen(base64DecBuff));
 
     int dec_length = decrypt(base64DecBuff, enc_length, key, iv, decryptBuff);
-    //decryptBuff[dec_length] = '\0';
     puts(decryptBuff);
 }
