@@ -8,7 +8,7 @@ void errordetail(void)
     abort();
 }
 
-int base64encode(uint8_t *pBuffToEnc, uint32_t *buffLen, uint8_t *pEncBuff, uint32_t *pEncBuffLen)
+int base64encode(const uint8_t *pBuffToEnc, const uint32_t *buffLen, uint8_t *pEncBuff, const uint32_t *pEncBuffLen)
 {
     BIO *bio = NULL;
     BIO *b64 = NULL;
@@ -44,7 +44,7 @@ int base64encode(uint8_t *pBuffToEnc, uint32_t *buffLen, uint8_t *pEncBuff, uint
     fclose(stream);
 }
 
-int base64decode(uint8_t *pEncBuff, uint32_t *buffLen, uint8_t *pDecBuff, uint32_t *pDecBuffLen)
+int base64decode(uint8_t *pEncBuff, const uint32_t *buffLen, uint8_t *pDecBuff, uint32_t *pDecBuffLen)
 {
     BIO *bio = NULL;
     BIO *b64 = NULL;
@@ -90,7 +90,7 @@ int generateRandomKey(unsigned char *keyVal, uint32_t keysize)
 {
     unsigned char fixedkey[] = "GVkX18gQ9dtSgO0Q9mKeBy03KXfqKVOsI";
     int ret;
-    size_t length, i = 0;
+    size_t length;
 
     ret = RAND_bytes(keyVal, keysize);
     if (ret != 1)
@@ -101,7 +101,7 @@ int generateRandomKey(unsigned char *keyVal, uint32_t keysize)
     if (length < keysize)
     {
         --length;
-        for (i = length; i < keysize; ++i)
+        for (int i = length; i < keysize; ++i)
         {
             *(keyVal + i) = fixedkey[i];
         }
@@ -158,7 +158,7 @@ int encrypt(const uint8_t *buffToEnc, int lengthPlainBuff, const uint8_t *key,
     return ciphertext_len;
 }
 
-int decrypt(uint8_t *encryptBuff, int ciphertext_len, const uint8_t *key,
+int decrypt(const uint8_t *encryptBuff, int ciphertext_len, const uint8_t *key,
             const uint8_t *iv, uint8_t *decryptBuff)
 {
     EVP_CIPHER_CTX *ctx;
