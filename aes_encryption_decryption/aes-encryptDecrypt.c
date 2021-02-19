@@ -2,6 +2,12 @@
 
 #define RANDOM_NUM_SIZE 32
 
+void errordetail(void)
+{
+    ERR_print_errors_fp(stderr);
+    abort();
+}
+
 int base64encode(uint8_t *pBuffToEnc, uint32_t *buffLen, uint8_t *pEncBuff, uint32_t *pEncBuffLen)
 {
     BIO *bio = NULL;
@@ -86,7 +92,8 @@ int generateRandomKey(unsigned char *keyVal, uint32_t keysize)
 
     unsigned char *encodedString;
     int byte_to_encode = 32;
-    int ret, length;
+    int ret;
+    size_t length;
 
     ret = RAND_bytes(keyVal, keysize);
     if (ret != 1)
@@ -114,6 +121,7 @@ int encrypt(unsigned char *buffToEnc, int lengthPlainBuff, unsigned char *key,
     /* Create and initialise the context */
     if (!(ctx = EVP_CIPHER_CTX_new()))
     {
+        errordetail();
     }
 
     /* Initialise the encryption operation. IMPORTANT - ensure you use a key
@@ -125,6 +133,7 @@ int encrypt(unsigned char *buffToEnc, int lengthPlainBuff, unsigned char *key,
 
     if (1 != EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv))
     {
+        errordetail();
     }
 
     /* Provide the message to be encrypted, and obtain the encrypted output.
@@ -133,6 +142,7 @@ int encrypt(unsigned char *buffToEnc, int lengthPlainBuff, unsigned char *key,
 
     if (1 != EVP_EncryptUpdate(ctx, encryptBuff, &len, buffToEnc, lengthPlainBuff))
     {
+        errordetail();
     }
     ciphertext_len = len;
 
@@ -141,6 +151,7 @@ int encrypt(unsigned char *buffToEnc, int lengthPlainBuff, unsigned char *key,
    */
     if (1 != EVP_EncryptFinal_ex(ctx, encryptBuff + len, &len))
     {
+        errordetail();
     }
 
     ciphertext_len += len;
@@ -162,6 +173,7 @@ int decrypt(unsigned char *encryptBuff, int ciphertext_len, unsigned char *key,
     /* Create and initialise the context */
     if (!(ctx = EVP_CIPHER_CTX_new()))
     {
+        errordetail();
     }
 
     /* Initialise the decryption operation. IMPORTANT - ensure you use a key
@@ -171,6 +183,7 @@ int decrypt(unsigned char *encryptBuff, int ciphertext_len, unsigned char *key,
    * is 128 bits */
     if (1 != EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv))
     {
+        errordetail();
     }
 
     /* Provide the message to be decrypted, and obtain the plaintext output.
@@ -178,6 +191,7 @@ int decrypt(unsigned char *encryptBuff, int ciphertext_len, unsigned char *key,
    */
     if (1 != EVP_DecryptUpdate(ctx, decryptBuff, &len, encryptBuff, ciphertext_len))
     {
+        errordetail();
     }
 
     plaintext_len = len;
@@ -187,6 +201,7 @@ int decrypt(unsigned char *encryptBuff, int ciphertext_len, unsigned char *key,
    */
     if (1 != EVP_DecryptFinal_ex(ctx, decryptBuff + len, &len))
     {
+        errordetail();
     }
     plaintext_len += len;
 
@@ -226,6 +241,6 @@ int main(int argc, char *argv[])
 
     base64decode(base64EncBuff, &buffLen_d, base64DecBuff, &decode_buf_length);
 
-    int dec_length = decrypt(base64DecBuff, enc_length, key, iv, decryptBuff);
+    decrypt(base64DecBuff, enc_length, key, iv, decryptBuff);
     puts(decryptBuff);
 }
