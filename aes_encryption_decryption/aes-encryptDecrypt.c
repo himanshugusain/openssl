@@ -89,11 +89,8 @@ int base64decode(uint8_t *pEncBuff, uint32_t *buffLen, uint8_t *pDecBuff, uint32
 int generateRandomKey(unsigned char *keyVal, uint32_t keysize)
 {
     unsigned char fixedkey[] = "GVkX18gQ9dtSgO0Q9mKeBy03KXfqKVOsI";
-
-    unsigned char *encodedString;
-    int byte_to_encode = 32;
     int ret;
-    size_t length;
+    size_t length, i = 0;
 
     ret = RAND_bytes(keyVal, keysize);
     if (ret != 1)
@@ -104,15 +101,15 @@ int generateRandomKey(unsigned char *keyVal, uint32_t keysize)
     if (length < keysize)
     {
         --length;
-        for (int i = length; i < keysize; i++)
+        for (i = length; i < keysize; ++i)
         {
             *(keyVal + i) = fixedkey[i];
         }
     }
 }
 
-int encrypt(unsigned char *buffToEnc, int lengthPlainBuff, unsigned char *key,
-            unsigned char *iv, unsigned char *encryptBuff)
+int encrypt(const uint8_t *buffToEnc, int lengthPlainBuff, const uint8_t *key,
+            const uint8_t *iv, uint8_t *encryptBuff)
 {
     EVP_CIPHER_CTX *ctx;
     int len;
@@ -161,8 +158,8 @@ int encrypt(unsigned char *buffToEnc, int lengthPlainBuff, unsigned char *key,
     return ciphertext_len;
 }
 
-int decrypt(unsigned char *encryptBuff, int ciphertext_len, unsigned char *key,
-            unsigned char *iv, unsigned char *decryptBuff)
+int decrypt(uint8_t *encryptBuff, int ciphertext_len, const uint8_t *key,
+            const uint8_t *iv, uint8_t *decryptBuff)
 {
     EVP_CIPHER_CTX *ctx;
 
@@ -213,33 +210,28 @@ int decrypt(unsigned char *encryptBuff, int ciphertext_len, unsigned char *key,
 int main(int argc, char *argv[])
 {
     uint8_t randomKey[RANDOM_NUM_SIZE + 1] = {0};
-    uint8_t key[EVP_MAX_KEY_LENGTH + 1], iv[EVP_MAX_IV_LENGTH + 1];
     uint8_t *keyPtr = randomKey;
     uint32_t keysize = 32;
-
-    strcpy(key, "SGnliCD0Qp3zvVeGL9BGkBmfBehYyA==");
-    strcpy(iv, "F4126A5X0BC3E987");
+    const uint8_t key[] = "SGnliCD0Qp3zvVeGL9BGkBmfBehYyA";
+    const uint8_t iv[] = "F4126A5X0BC3E987";
+    const uint8_t buffToEnc[] = "Himanshu";
 
     generateRandomKey(keyPtr, keysize);
     printf("Random key = %s\n", randomKey);
 
-    uint8_t buffToEnc[] = "Himanshu";
     uint8_t encryptBuff[1024] = {0};
     uint8_t base64EncBuff[1024] = {0};
     uint8_t base64DecBuff[1024] = {0};
     uint8_t decryptBuff[1024] = {0};
-    unsigned int buflength = 32;
+    int base64BuffLen = 64;
 
     int enc_length = encrypt(buffToEnc, (int)strlen(buffToEnc), key, iv, encryptBuff);
+    uint32_t encrBuffLen = (int)strlen(encryptBuff);
 
-    uint32_t buffLen = (int)strlen(encryptBuff);
-    int encoded_buf_length = 48;
-    base64encode(encryptBuff, &buffLen, base64EncBuff, &encoded_buf_length);
+    base64encode(encryptBuff, &encrBuffLen, base64EncBuff, &base64BuffLen);
+    uint32_t encodBuffLen = (int)strlen(base64EncBuff);
 
-    uint32_t buffLen_d = (int)strlen(base64EncBuff);
-    int decode_buf_length = 48;
-
-    base64decode(base64EncBuff, &buffLen_d, base64DecBuff, &decode_buf_length);
+    base64decode(base64EncBuff, &encodBuffLen, base64DecBuff, &base64BuffLen);
 
     decrypt(base64DecBuff, enc_length, key, iv, decryptBuff);
     puts(decryptBuff);
